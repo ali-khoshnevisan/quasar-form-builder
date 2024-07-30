@@ -9,5 +9,10 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src')
     }
+  },
+  optimizeDeps: {
+    include: ['moment-jalaali', 'jalaali-js'], // Include specific dependencies
+    // Forcing to use `module.exports` for specific packages
+    allowNodeBuiltins: ['moment-jalaali']
   }
 })

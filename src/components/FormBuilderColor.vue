@@ -1,10 +1,11 @@
 <template>
   <div class="form-builder-color"
        :class="customClass">
-    <div class="outsideLabel">{{ placeholder ? label : null }}</div>
-    <q-input v-model="inputData"
+    <q-input ref="colorPicker"
+             v-model="inputData"
              :name="name"
              :disable="disable"
+             :filled="filled"
              :label="placeholder ? null : label"
              :stack-label="!!placeholder"
              :outlined="outlined"
@@ -31,11 +32,18 @@
         </q-icon>
       </template>
     </q-input>
+    <component :is="'style'">
+      .q-field[uid-code="{{colorPickerElCode}}"] .q-field__inner .q-field__control {
+      background: {{ inputData }};
+      }
+    </component>
   </div>
 </template>
 
 <script>
+import { uid } from 'quasar'
 import inputMixin from '../mixins/inputMixin.js'
+
 export default {
   name: 'FormBuilderColor',
   mixins: [inputMixin],
@@ -55,11 +63,20 @@ export default {
   },
   data() {
     return {
+      colorPickerElCode: null,
       showing: false
     }
+  },
+  mounted() {
+    this.colorPickerElCode = uid()
+    this.$refs.colorPicker.$el.setAttribute('uid-code', this.colorPickerElCode)
   },
   methods: {}
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.form-builder-color {
+  background: red;
+}
+</style>

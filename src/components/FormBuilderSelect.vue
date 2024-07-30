@@ -2,7 +2,8 @@
   <div class="form-builder-select"
        :class="customClass">
     <div class="outsideLabel">{{ placeholder ? label : null }}</div>
-    <q-select v-model="inputData"
+    <q-select ref="input"
+              v-model="inputData"
               transition-show="jump-down"
               transition-hide="jump-up"
               :name="name"
@@ -34,7 +35,7 @@
               :hide-dropdown-icon="hideDropdownIcon"
               :dropdown-icon="dropdownIcon"
               map-options
-              clearable
+              :clearable="clearable"
               @update:model-value="change($event)"
               @new-value="createValue"
               @filter="filterFn"
@@ -72,10 +73,14 @@ export default {
     },
     newValueMode: {
       default: undefined,
-      type: String,
-      validator(value) {
-        return ['add' | 'add-unique' | 'toggle' | undefined].includes(value)
-      }
+      type: String
+      // validator(value) {
+      //   return ['add' | 'add-unique' | 'toggle' | undefined].includes(value)
+      // }
+    },
+    clearable: {
+      default: true,
+      type: Boolean
     },
     hideDropdownIcon: {
       default: false,
@@ -100,6 +105,11 @@ export default {
     outlined: {
       default: false,
       type: Boolean
+    },
+    onChangeValue: {
+      default: (newValue, oldValue) => {
+      },
+      type: Function
     }
   },
   data() {
@@ -132,10 +142,15 @@ export default {
       return ''
     }
   },
+  watch: {
+    inputData(newValue, oldValue) {
+      this.onChangeValue(newValue, oldValue)
+    }
+  },
   methods: {
     filterFn(val, update) {
       const isObjectList =
-        this.options.length > 0 && typeof this.options[0] === 'object'
+          this.options.length > 0 && typeof this.options[0] === 'object'
 
       if (val === '') {
         update(() => {
